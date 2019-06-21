@@ -6,7 +6,7 @@
 
     <div class="container" id="bank-search-container">
       <h3 class="text-danger m-2">
-        Search Form {{ saved_banks }}
+        Search Form
       </h3>
 
       <div class="row my-3">
@@ -45,16 +45,18 @@
 
       </div>
       <div class="container">
-        <h3 class="text-center text-success m-2">
-          Saved Banks Functionality..
-        </h3>
 
-        <h5 v-if="saved_banks_local">
-          There are some banks saved..{{ saved_banks_local }}
-        </h5>
+        <div v-if="saved_banks_local" class="container p-2 bg-danger rounded text-white m-3">
+          <h3 class="text-center">
+            You have {{ saved_banks_local.length }} Favorite Banks.
+          </h3>
+          <router-link to="/favorite" tag="h5" class="favorite-link">
+            View Favorite Banks
+          </router-link>
+        </div>
 
-        <h3 v-else class="text-center text-primary">
-          No banks Saved Just yet
+        <h3 v-else class="text-center text-warning">
+          No banks Favorited Just yet
         </h3>
       </div>
       <div class="container text-center my-4 p-2" id="search_box_container">
@@ -65,7 +67,6 @@
           <div class="col-sm-8">
             <input type="text" v-model="search_text" class="form-control" id="search_text" placeholder="Search..">
           </div>
-          {{ saved_banks_local }}
         </div>
 
         <div class="container-fluid my-5" id="table-container">
@@ -90,7 +91,7 @@
               <td>{{ each_result.address }}</td>
               <td>
                 <button v-if="saved_banks_local && saved_banks_local.includes(each_result.ifsc)"
-                        class="btn btn-danger m-1" @click="localRemoveBank(each_result.ifsc)">
+                        class="btn btn-danger m-1" @click="localRemoveBank(each_result.ifsc, each_result.bank_name)">
                   Remove
                 </button>
 
@@ -137,7 +138,6 @@ export default {
       search_text: '',
       city_name: 'MUMBAI',
       current_index: 0,
-      saved_banks: localStorage.getItem('saved_banks'),
       saved_banks_local: [],
     }
   },
@@ -169,18 +169,15 @@ export default {
       // Loading data from the url to be cached for the first time
       if(current_url !== cached_url)
       {
-        console.log('Getting the data from the api for the first time...');
         localStorage.setItem('cached_url', current_url);
         axios.get(current_url)
           .then((response) => {
-            console.log(response.data);
             this.results = response.data;
             localStorage.setItem('api_data', JSON.stringify(response.data));
           })
       }
       else {
         const api_Data = localStorage.getItem('api_data');
-        console.log('Data would be loaded from the local Storage browser...');
         this.results = JSON.parse(api_Data);
       }
 
@@ -198,20 +195,17 @@ export default {
     saveBank(bank_ifsc) {
 
     },
-    localSaveBank(bank_ifsc) {
+    localSaveBank(bank_ifsc, bank_name) {
       if(this.saved_banks_local)
       {
         if(!(this.saved_banks_local.includes(bank_ifsc)))
           this.saved_banks_local.push(bank_ifsc);
-        console.log('If satisfied.')
       }
       else {
         this.saved_banks_local = [];
         this.saved_banks_local.push(bank_ifsc);
         localStorage.setItem('banks', JSON.stringify(this.saved_banks_local));
-        console.log('Else satisfied');
       }
-      console.log('Saved : ', this.saved_banks_local);
     },
     localRemoveBank(bank_ifsc) {
       if(this.saved_banks_local)
@@ -231,7 +225,7 @@ export default {
 
   },
   destroyed() {
-    localStorage.setItem('banks', JSON.stringify(this.saved_banks_local));
+
   },
   mounted() {
     this.getOrLoadBankData();
@@ -239,7 +233,7 @@ export default {
     this.saved_banks_local = JSON.parse(localStorage.getItem('banks'));
   },
   updated() {
-    this.storeBank();
+    localStorage.setItem('banks', JSON.stringify(this.saved_banks_local));
   }
 }
 </script>
@@ -260,6 +254,20 @@ export default {
   .detail-link:hover {
     color: darkred;
     cursor: pointer;
+  }
+
+  .favorite-link {
+    color: lightcyan;
+    font-family: "Segoe UI Black";
+    font-size: 1.5rem;
+    transition: all 0.4s ease-out;
+  }
+
+  .favorite-link:hover {
+    cursor: pointer;
+    color: coral;
+    font-size: 2rem;
+    transition: all 0.4s ease-in;
   }
 
 </style>

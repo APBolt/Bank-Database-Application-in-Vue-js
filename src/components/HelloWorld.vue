@@ -44,6 +44,19 @@
         </div>
 
       </div>
+      <div class="container text-center">
+        <h1 class="text-primary m-2 p-2">
+          Pagination Test Filter
+        </h1>
+
+        <h3 class="text-danger m-2">
+          Number of Results : {{ number_of_results }}
+        </h3>
+
+        <h3 class="text-secondary m-2">
+          Number of Pages : {{ number_of_pages }}
+        </h3>
+      </div>
       <div class="container">
 
         <div v-if="saved_banks_local" class="container p-2 bg-danger rounded text-white m-3">
@@ -110,7 +123,7 @@
 
           <div v-if="results.length > 0" class="container m-2 p-2 text-center">
             <paginate
-              :page-count="20"
+              :page-count="number_of_pages"
               :page-range="3"
               :margin-pages="2"
               :click-handler="nextPage"
@@ -152,16 +165,27 @@ export default {
       city_name: 'MUMBAI',
       current_index: 0,
       saved_banks_local: [],
+      number_of_results: null,
+      number_of_pages: 0
     }
   },
   computed: {
     bankResults() {
-      return this.results.slice(this.current_index, this.current_index + this.pages)
-        .filter((value) => {
-        return (value.address.match(this.search_text.toUpperCase()) ||
-                value.bank_name.match(this.search_text.toUpperCase()) ||
-                value.ifsc.match(this.search_text.toUpperCase()));
-      })
+      let new_array = [];
+      if(this.search_text) {
+        new_array = this.results
+          .filter((value) => {
+            return (value.address.match(this.search_text.toUpperCase()) ||
+              value.bank_name.match(this.search_text.toUpperCase()) ||
+              value.ifsc.match(this.search_text.toUpperCase()));
+          });
+        this.number_of_results = new_array.length;
+        this.number_of_pages = Math.ceil(new_array.length/this.pages);
+        return new_array;
+      }
+      else {
+        return this.results.slice(0,this.pages);
+      }
     },
     isSaved(ifsc_code) {
       if(this.saved_banks_local.includes(ifsc_code))
@@ -261,6 +285,17 @@ export default {
   }
 
   .table-striped {
+  }
+
+  table {
+    border-collapse:collapse;
+    table-layout:fixed;
+    width:500px;
+  }
+  table td {
+    border:solid 2px #4286f4;
+    width:200px;
+    word-wrap:break-word;
   }
 
   .detail-link:hover {

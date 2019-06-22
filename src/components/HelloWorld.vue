@@ -33,7 +33,8 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label for="pagination_size">Number of Results per Page</label>
-            <select v-model="pages" class="form-control" id="pagination_size">
+            <select v-model.number="pages" type="number" class="form-control" id="pagination_size">
+
               <option>10</option>
               <option>25</option>
               <option>40</option>
@@ -69,7 +70,7 @@
           </div>
         </div>
 
-        <div class="container text-center">
+        <div v-if="results.length > 0" class="container text-center">
           <p v-if="search_text" class="result-text">
             <span class="highlight">{{ number_of_results }}</span>
             search results fetched in <span class="highlight">{{ number_of_pages }}</span> pages using
@@ -122,7 +123,9 @@
             </tr>
             </tbody>
           </table>
-
+          <div v-if="results.length > 0" class="container text-center">
+            <h3 class="highlight">You are on page number {{ current_page }}</h3>
+          </div>
           <div v-if="results.length > 0" class="container m-2 p-2 text-center">
             <paginate v-if="number_of_pages > 1"
               :page-count="number_of_pages"
@@ -169,7 +172,8 @@ export default {
       current_index: 0,
       saved_banks_local: [],
       number_of_results: null,
-      number_of_pages: 1
+      number_of_pages: 1,
+      current_page: 1
     }
   },
   computed: {
@@ -234,10 +238,7 @@ export default {
 
     },
     nextPage(page_no) {
-      console.log('Current Index : ', this.current_index);
-      console.log('Current Page : ', page_no);
-      console.log('No. of Items : ', this.filtered_results.length);
-
+      this.current_page = page_no;
       this.current_index = (page_no-1) * this.pages;
     },
     saveBank(bank_ifsc) {
@@ -262,17 +263,18 @@ export default {
         this.saved_banks_local.splice(remove_index, 1);
       }
     },
-    resetSearch() {
-      if(this.search_text === '')
-        console.log('Search needs to be reset');
-    }
   },
   filters: {
 
   },
   watch: {
-    // whenever question changes, this function will run
+    // whenever page size changes, this function will run
     pages: function () {
+      this.current_index = 0;
+      this.current_page = 1;
+    },
+    // whenever new url is visited and data is updated.
+    results: function() {
       this.current_index = 0;
     }
   },
@@ -282,7 +284,6 @@ export default {
   mounted() {
     this.getOrLoadBankData();
     this.saved_banks_local = JSON.parse(localStorage.getItem('banks'));
-    this.resetSearch();
   },
   updated() {
     localStorage.setItem('banks', JSON.stringify(this.saved_banks_local));
@@ -347,12 +348,12 @@ export default {
     position: relative;
     float: left;
     padding: 6px 12px;
-    margin-left: -1px;
+    margin: 10px;
     line-height: 1.42857143;
     color: azure;
     text-decoration: none;
-    background-color: #f44242;
-    border: 2px solid #ddd;
+    background-color: cornflowerblue;
+    border-radius: 1rem;
   }
 
   .ring {

@@ -8,6 +8,10 @@
       <span class="bank-name">{{ passed_bank.bank_name }}</span>
     </div>
 
+    <h3 v-if="favorite_banks.includes(passed_bank.ifsc)" class="text-center saved-text">
+      <span class="important">Important!</span> You have saved this bank in "Favorites"
+    </h3>
+
     <div class="container my-5">
       <div class="row m-2">
         <div class="col-sm-4">
@@ -80,13 +84,18 @@
     },
     data() {
       return {
-
+        favorite_banks: null
       }
     },
     methods: {
 
     },
     computed: {
+
+    },
+    created() {
+      this.favorite_banks = localStorage.getItem('banks');
+      this.favorite_banks = JSON.parse(this.favorite_banks);
 
     }
   }
@@ -119,6 +128,20 @@
     margin: 2rem;
     font-family: 'Open Sans', sans-serif;
     color: teal;
+  }
+
+  .important {
+    color: indianred;
+    font-size: 2rem;
+    font-family: "Segoe UI Black", sans-serif;
+  }
+
+  .saved-text {
+    color: seagreen;
+    background-color: mintcream;
+    border-radius: 1.3rem;
+    margin: 1rem;
+    padding: 1rem;
   }
 
   h5 {

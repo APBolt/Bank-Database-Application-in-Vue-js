@@ -44,19 +44,6 @@
         </div>
 
       </div>
-      <div class="container text-center">
-        <h1 class="text-primary m-2 p-2">
-          Pagination Test Filter
-        </h1>
-
-        <h3 class="text-danger m-2">
-          Number of Results : {{ number_of_results }}
-        </h3>
-
-        <h3 class="text-secondary m-2">
-          Number of Pages : {{ number_of_pages }}
-        </h3>
-      </div>
       <div class="container">
 
         <div v-if="saved_banks_local" class="container p-2 bg-danger rounded text-white m-3">
@@ -80,6 +67,21 @@
           <div class="col-sm-8">
             <input type="text" v-model="search_text" class="form-control" id="search_text" placeholder="Search..">
           </div>
+        </div>
+
+        <div class="container text-center">
+          <p v-if="search_text" class="result-text">
+            <span class="highlight">{{ number_of_results }}</span>
+            search results fetched in <span class="highlight">{{ number_of_pages }}</span> pages using
+            search filtering.
+          </p>
+
+          <p v-else class="result-text">
+            <span class="highlight">{{ number_of_results }}</span>
+            search results fetched in <span class="highlight">{{ number_of_pages }}</span> pages,
+            you can use pagination to navigate through results or you could narrow down your
+            search results using search filtering box.
+          </p>
         </div>
 
         <div class="container-fluid my-5" id="table-container">
@@ -122,7 +124,7 @@
           </table>
 
           <div v-if="results.length > 0" class="container m-2 p-2 text-center">
-            <paginate
+            <paginate v-if="number_of_pages > 1"
               :page-count="number_of_pages"
               :page-range="3"
               :margin-pages="2"
@@ -160,31 +162,34 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       results: [],
+      filtered_results: [],
       pages: 10,
       search_text: '',
       city_name: 'MUMBAI',
       current_index: 0,
       saved_banks_local: [],
       number_of_results: null,
-      number_of_pages: 0
+      number_of_pages: 1
     }
   },
   computed: {
     bankResults() {
       let new_array = [];
       if(this.search_text) {
-        new_array = this.results
+        this.filtered_results = this.results
           .filter((value) => {
             return (value.address.match(this.search_text.toUpperCase()) ||
               value.bank_name.match(this.search_text.toUpperCase()) ||
               value.ifsc.match(this.search_text.toUpperCase()));
           });
-        this.number_of_results = new_array.length;
-        this.number_of_pages = Math.ceil(new_array.length/this.pages);
-        return new_array;
+        this.number_of_results = this.filtered_results.length;
+        this.number_of_pages = Math.ceil(this.filtered_results.length/this.pages);
+        return this.filtered_results.slice(this.current_index, this.current_index + this.pages);
       }
       else {
-        return this.results.slice(0,this.pages);
+        this.number_of_results = this.results.length;
+        this.number_of_pages = Math.ceil(this.results.length/this.pages);
+        return this.results.slice(this.current_index,this.current_index + this.pages);
       }
     },
     isSaved(ifsc_code) {
@@ -229,8 +234,11 @@ export default {
 
     },
     nextPage(page_no) {
-      console.log('Next page method called..', page_no);
-      this.current_index += this.pages;
+      console.log('Current Index : ', this.current_index);
+      console.log('Current Page : ', page_no);
+      console.log('No. of Items : ', this.filtered_results.length);
+
+      this.current_index = (page_no-1) * this.pages;
     },
     saveBank(bank_ifsc) {
 
@@ -254,12 +262,19 @@ export default {
         this.saved_banks_local.splice(remove_index, 1);
       }
     },
-    fun() {
-      console.log('Pagination method launched..');
+    resetSearch() {
+      if(this.search_text === '')
+        console.log('Search needs to be reset');
     }
   },
   filters: {
 
+  },
+  watch: {
+    // whenever question changes, this function will run
+    pages: function () {
+      this.current_index = 0;
+    }
   },
   destroyed() {
 
@@ -267,6 +282,7 @@ export default {
   mounted() {
     this.getOrLoadBankData();
     this.saved_banks_local = JSON.parse(localStorage.getItem('banks'));
+    this.resetSearch();
   },
   updated() {
     localStorage.setItem('banks', JSON.stringify(this.saved_banks_local));
@@ -341,6 +357,27 @@ export default {
 
   .ring {
     margin-left: 40%;
+  }
+
+  label {
+    color: seagreen;
+    font-family: "Segoe Print", sans-serif;
+    font-size: 1.4rem;
+
+  }
+
+  .result-text {
+    font-size: 1.2rem;
+    color: seagreen;
+    margin: 30px;
+    background-color: beige;
+    padding: 1rem;
+  }
+
+  .highlight {
+    font-family: "Segoe Print", sans-serif;
+    font-size: 1.5rem;
+    color: darkred;
   }
 
 </style>

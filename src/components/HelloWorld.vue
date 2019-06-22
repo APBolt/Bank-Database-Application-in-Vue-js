@@ -107,13 +107,24 @@
             </tr>
             </tbody>
           </table>
-          <div class="container text-center">
-            <button class="btn btn-secondary m-2" @click="prevPage">
-              Previous Page
-            </button>
-            <button class="btn btn-primary m-2" @click="nextPage">
-              Next Page
-            </button>
+
+          <div v-if="results.length > 0" class="container m-2 p-2 text-center">
+            <paginate
+              :page-count="20"
+              :page-range="3"
+              :margin-pages="2"
+              :click-handler="nextPage"
+              :prev-text="'Prev'"
+              :next-text="'Next'"
+              :container-class="'pagination'"
+              :page-class="'page-item'">
+            </paginate>
+          </div>
+          <div v-else class="container text-center mb-4">
+            <ring-loader
+              loading="loading" size="200px" color="#000" class="ring">
+
+            </ring-loader>
           </div>
         </div>
 
@@ -125,6 +136,8 @@
 </template>
 
 <script>
+import RingLoader from 'vue-spinner/src/RingLoader'
+import Paginate from 'vuejs-paginate'
 import axios from 'axios';
 import BankDetailComponent from './BankDetail';
 
@@ -143,7 +156,8 @@ export default {
   },
   computed: {
     bankResults() {
-      return this.results.slice(this.current_index, this.current_index + this.pages).filter((value) => {
+      return this.results.slice(this.current_index, this.current_index + this.pages)
+        .filter((value) => {
         return (value.address.match(this.search_text.toUpperCase()) ||
                 value.bank_name.match(this.search_text.toUpperCase()) ||
                 value.ifsc.match(this.search_text.toUpperCase()));
@@ -158,6 +172,8 @@ export default {
   },
   components: {
     BankDetailComponent,
+    Paginate,
+    RingLoader,
   },
   methods: {
     getOrLoadBankData() {
@@ -188,8 +204,8 @@ export default {
     prevPage() {
 
     },
-    nextPage() {
-      console.log('Next page method called..');
+    nextPage(page_no) {
+      console.log('Next page method called..', page_no);
       this.current_index += this.pages;
     },
     saveBank(bank_ifsc) {
@@ -214,11 +230,8 @@ export default {
         this.saved_banks_local.splice(remove_index, 1);
       }
     },
-    loadSavedBanks() {
-
-    },
-    storeBank() {
-
+    fun() {
+      console.log('Pagination method launched..');
     }
   },
   filters: {
@@ -229,7 +242,6 @@ export default {
   },
   mounted() {
     this.getOrLoadBankData();
-    this.loadSavedBanks();
     this.saved_banks_local = JSON.parse(localStorage.getItem('banks'));
   },
   updated() {
@@ -239,7 +251,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 
   #table-container {
     width: 100%;
@@ -268,6 +280,32 @@ export default {
     color: coral;
     font-size: 2rem;
     transition: all 0.4s ease-in;
+  }
+
+  .pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+  }
+  .pagination > li {
+    display: inline;
+  }
+  .pagination > li > a,
+  .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: azure;
+    text-decoration: none;
+    background-color: #f44242;
+    border: 2px solid #ddd;
+  }
+
+  .ring {
+    margin-left: 40%;
   }
 
 </style>

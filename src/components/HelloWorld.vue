@@ -1,13 +1,10 @@
 <template>
-  <div class="container-fluid">
-    <h1 class="text-center text-primary">
+  <div class="container-fluid" id="main-container">
+    <h1 class="text-center text-warning">
       Bank Search Application
     </h1>
 
     <div class="container" id="bank-search-container">
-      <h3 class="text-danger m-2">
-        Search Form
-      </h3>
 
       <div class="row my-3">
         <div class="col-sm-6 row">
@@ -90,12 +87,12 @@
             <thead>
             <tr>
               <th>IFSC</th>
-              <th>Bank Name</th>
-              <th>City</th>
-              <th>District</th>
-              <th>Address</th>
-              <th>Favorite</th>
-              <th>View Details</th>
+              <th>BANK NAME</th>
+              <th>CITY</th>
+              <th>DISTRICT</th>
+              <th>ADDRESS</th>
+              <th>FAVORITE</th>
+              <th>VIEW DETAILS</th>
             </tr>
             </thead>
             <tbody>
@@ -283,6 +280,37 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
+  input, select, textarea{
+    color: darkcyan !important;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 800;
+  }
+
+  #main-container {
+    background-image: url('../images/red.jpg');
+    padding-top: 1rem;
+  }
+
+  /* Overwriting default CSS bootstrap button classes */
+  .btn-success {
+    background-color: seagreen !important;
+    font-family: "Segoe Print", sans-serif;
+  }
+
+  .btn-danger {
+    background-color: crimson !important;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 800;
+  }
+
+  .btn-warning {
+    background-color: sandybrown !important;
+    font-family: Verdana, sans-serif;
+    color: lightcyan !important;
+    font-weight: 700;
+
+  }
+
   #table-container {
     width: 100%;
     background-color: mintcream;
@@ -290,18 +318,23 @@ export default {
     border-radius: 1.5rem;
   }
 
-  .table-striped {
-  }
-
   table {
     border-collapse:collapse;
     table-layout:fixed;
     width:500px;
   }
+  table th {
+    color: cornflowerblue;
+    font-weight: 800;
+    font-family: "Segoe UI Black", sans-serif;
+  }
   table td {
     border:solid 2px #4286f4;
     width:200px;
     word-wrap:break-word;
+    color: darkslategray;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
   }
 
   .detail-link:hover {
@@ -350,10 +383,10 @@ export default {
   }
 
   label {
-    color: seagreen;
+    color: deepskyblue;
     font-family: "Segoe Print", sans-serif;
     font-size: 1.4rem;
-
+    font-weight: 700;
   }
 
   .result-text {

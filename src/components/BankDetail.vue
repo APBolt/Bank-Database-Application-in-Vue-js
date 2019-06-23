@@ -9,7 +9,7 @@
         <span class="bank-name">{{ passed_bank.bank_name }}</span>
       </div>
 
-      <h3 v-if="favorite_banks.includes(passed_bank.ifsc)" class="text-center saved-text">
+      <h3 v-if="favorite_banks && favorite_banks.includes(passed_bank.ifsc)" class="text-center saved-text">
         <span class="important">Important!</span> You have saved this bank in "Favorites"
       </h3>
 

@@ -44,7 +44,8 @@
       </div>
       <div class="container">
 
-        <div v-if="saved_banks_local" class="container p-2 bg-danger rounded text-white m-3">
+        <div v-if="saved_banks_local && saved_banks_local.length > 0"
+             class="container p-2 bg-danger rounded text-white m-3">
           <h3 class="text-center">
             You have {{ saved_banks_local.length }} Favorite Banks.
           </h3>
@@ -104,7 +105,7 @@
               <td>{{ each_result.address }}</td>
               <td>
                 <button v-if="saved_banks_local && saved_banks_local.includes(each_result.ifsc)"
-                        class="btn btn-danger m-1" @click="localRemoveBank(each_result.ifsc, each_result.bank_name)">
+                        class="btn btn-danger m-1" @click="localRemoveBank(each_result.ifsc)">
                   Remove
                 </button>
 
@@ -137,7 +138,7 @@
           </div>
           <div v-else class="container text-center mb-4">
             <ring-loader
-              loading="loading" size="200px" color="#000" class="ring">
+              loading="loading" size="120px" color="#000" class="ring">
 
             </ring-loader>
           </div>
@@ -207,6 +208,7 @@ export default {
   },
   methods: {
     getOrLoadBankData() {
+      this.search_text = '';
       const cached_data = localStorage.getItem('api_data');
       const cached_url = localStorage.getItem('cached_url');
 
@@ -235,8 +237,7 @@ export default {
       this.current_page = page_no;
       this.current_index = (page_no-1) * this.pages;
     },
-    localSaveBank(bank_ifsc, bank_name) {
-      console.log(bank_ifsc, bank_name);
+    localSaveBank(bank_ifsc) {
       if(this.saved_banks_local)
       {
         if(!(this.saved_banks_local.includes(bank_ifsc)))
@@ -379,7 +380,7 @@ export default {
   }
 
   .ring {
-    margin-left: 40%;
+    margin-left: 45%;
   }
 
   label {

@@ -3,9 +3,18 @@
     <h1 class="text-center text-white p-2">
       List of Favorited Banks with their IFSC Codes
     </h1>
-    <h3 v-for="item in favorite_banks" class="text-center favorite-text my-3">
+    <h3 v-if="delete_msg" class="text-white">
+      {{ delete_msg }}
+    </h3>
+    <h3 v-else v-for="item in favorite_banks" class="text-center favorite-text my-3">
       {{ item }}
     </h3>
+
+    <div v-if="!delete_msg" class="container text-center">
+      <button class="btn btn-danger" @click="deleteFavorites">
+        DELETE FAVORITES
+      </button>
+    </div>
   </div>
 </template>
 
@@ -14,7 +23,14 @@
     name: 'FavoriteBanks',
     data() {
       return {
-        favorite_banks: ''
+        favorite_banks: '',
+        delete_msg: ''
+      }
+    },
+    methods: {
+      deleteFavorites() {
+        localStorage.removeItem('banks');
+        this.delete_msg = 'You favorites list was successfully cleared!';
       }
     },
     created() {

@@ -17,12 +17,6 @@
         favorite_banks: ''
       }
     },
-    methods: {
-
-    },
-    computed: {
-
-    },
     created() {
       this.favorite_banks = localStorage.getItem('banks');
       this.favorite_banks = JSON.parse(this.favorite_banks);

@@ -234,15 +234,9 @@ export default {
     showDetail(bank) {
       this.$router.push({name: 'detail', params: { passed_bank: bank, ifscCode: bank.ifsc  }});
     },
-    prevPage() {
-
-    },
     nextPage(page_no) {
       this.current_page = page_no;
       this.current_index = (page_no-1) * this.pages;
-    },
-    saveBank(bank_ifsc) {
-
     },
     localSaveBank(bank_ifsc, bank_name) {
       if(this.saved_banks_local)
@@ -264,9 +258,6 @@ export default {
       }
     },
   },
-  filters: {
-
-  },
   watch: {
     // whenever page size changes, this function will run
     pages: function () {
@@ -277,9 +268,6 @@ export default {
     results: function() {
       this.current_index = 0;
     }
-  },
-  destroyed() {
-
   },
   mounted() {
     this.getOrLoadBankData();

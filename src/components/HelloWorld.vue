@@ -239,6 +239,7 @@ export default {
       this.current_index = (page_no-1) * this.pages;
     },
     localSaveBank(bank_ifsc, bank_name) {
+      console.log(bank_ifsc, bank_name);
       if(this.saved_banks_local)
       {
         if(!(this.saved_banks_local.includes(bank_ifsc)))

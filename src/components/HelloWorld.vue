@@ -166,7 +166,7 @@ export default {
       filtered_results: [],
       pages: 10,
       search_text: '',
-      city_name: 'MUMBAI',
+      city_name: '',
       current_index: 0,
       saved_banks_local: [],
       number_of_results: null,

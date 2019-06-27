@@ -171,7 +171,8 @@ export default {
       saved_banks_local: [],
       number_of_results: null,
       number_of_pages: 1,
-      current_page: 1
+      current_page: 1,
+      pagination_enabled: false
     }
   },
   computed: {
@@ -234,6 +235,7 @@ export default {
       this.$router.push({name: 'detail', params: { passed_bank: bank, ifscCode: bank.ifsc  }});
     },
     nextPage(page_no) {
+      this.pagination_enabled = true;
       this.current_page = page_no;
       this.current_index = (page_no-1) * this.pages;
     },
@@ -266,6 +268,17 @@ export default {
     // whenever new url is visited and data is updated.
     results: function() {
       this.current_index = 0;
+    },
+    search_text: function() {
+      if(this.pagination_enabled)
+      {
+        this.current_index = 0;
+        this.current_page = 1;
+      }
+    },
+    city_name: function() {
+      this.pagination_enabled = false;
+      this.current_page = 1;
     }
   },
   mounted() {

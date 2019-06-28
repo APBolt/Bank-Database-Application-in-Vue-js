@@ -166,13 +166,15 @@ export default {
       filtered_results: [],
       pages: 10,
       search_text: '',
-      city_name: '',
+      city_name: 'MUMBAI',
       current_index: 0,
       saved_banks_local: [],
       number_of_results: null,
       number_of_pages: 1,
       current_page: 1,
-      pagination_enabled: false
+      pagination_enabled: false,
+      cached_city: null,
+      city_not_changed: true
     }
   },
   computed: {
@@ -212,13 +214,17 @@ export default {
       this.search_text = '';
       const cached_data = localStorage.getItem('api_data');
       const cached_url = localStorage.getItem('cached_url');
+      const cached_city = localStorage.getItem('cached_city');
 
+      if(cached_city && this.city_not_changed)
+        this.city_name = cached_city;
       const current_url = 'https://vast-shore-74260.herokuapp.com/banks?city=' + this.city_name;
 
       // Loading data from the url to be cached for the first time
       if(current_url !== cached_url)
       {
         localStorage.setItem('cached_url', current_url);
+        localStorage.setItem('cached_city', this.city_name)
         axios.get(current_url)
           .then((response) => {
             this.results = response.data;
@@ -230,6 +236,10 @@ export default {
         this.results = JSON.parse(api_Data);
       }
 
+    },
+    loadCachedCity() {
+      const saved_city = localStorage.getItem('cached_city');
+      this.cached_city = saved_city;
     },
     showDetail(bank) {
       this.$router.push({name: 'detail', params: { passed_bank: bank, ifscCode: bank.ifsc  }});
@@ -279,10 +289,12 @@ export default {
     city_name: function() {
       this.pagination_enabled = false;
       this.current_page = 1;
+      this.city_not_changed = false;
     }
   },
   mounted() {
     this.getOrLoadBankData();
+    this.loadCachedCity();
     this.saved_banks_local = JSON.parse(localStorage.getItem('banks'));
   },
   updated() {

@@ -22,7 +22,7 @@
 
           <div class="col-sm-6 text-center my-4">
             <button class="btn btn-warning" @click="getOrLoadBankData">
-              Update City
+              Update Your City
             </button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid" id="main-container">
     <h1 class="text-center text-warning">
-      Bank Search Application
+      Bank Search
     </h1>
 
     <div class="container" id="bank-search-container">
